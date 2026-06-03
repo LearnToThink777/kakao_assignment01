@@ -2,23 +2,34 @@
 var todoMap;
 
 function onload(){
-    var val;
-    val = document.getElementById('current-week-range').innerHTML = date_add(currentDateToString(currentDate()), 0 - currentDate().getDay()) + '~' + date_add(currentDateToString(currentDate()), 0 + (6 - currentDate().getDay()));
+    // 주간 범위 표시
+    var val = document.getElementById('current-week-range').innerHTML =
+        date_add(currentDateToString(currentDate()), 0 - currentDate().getDay()) + '~' +
+        date_add(currentDateToString(currentDate()), 0 + (6 - currentDate().getDay()));
     
+    // 1) 로컬스토리지에서 todoMap 불러오기
     todoMap = loadTodoMap();
 
-    if(Object.keys(todoMap).length == 0) {
-      todoMap = new Map();
+    // 2) 처음 실행(=저장된 데이터 없음)일 때만 빈 Map을 만들고 저장
+    if (todoMap.size === 0) {    // ⚠️ Object.keys(...) 대신 size 사용
+        todoMap = new Map();
+        saveTodoMap(todoMap);
     }
 
-    saveTodoMap(todoMap);
-    
-    todoMap = loadTodoMap();
+    // 3) 다시 loadTodoMap() 할 필요 없음 (todoMap 이미 최신 상태)
 }
 
 function loadTodoMap() {
-    var stored = JSON.parse(localStorage.getItem("todoMap")) || {};
-    return new Map(Object.entries(stored));
+    var stored = localStorage.getItem("todoMap");
+
+    // 저장된 값이 전혀 없으면(첫 실행) 빈 Map 반환
+    if (!stored) {
+        return new Map();
+    }
+
+    // 저장된 JSON을 객체로 파싱한 후, Map으로 변환
+    var obj = JSON.parse(stored);
+    return new Map(Object.entries(obj));
 }
 
 function saveTodoMap(mapData) {
@@ -215,7 +226,7 @@ function deleteTodo(event) {
    works.delete(delWork);
    
    todoMap.set(delDate, Object.fromEntries(works));
-   saveSaveTodoMap(todoMap);
+   saveTodoMap(todoMap);
 
    createDomTodoList();
 }
