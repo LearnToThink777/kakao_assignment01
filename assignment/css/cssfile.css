@@ -245,10 +245,10 @@ header {                 /* 현재 비어있는 헤더 */
 }
 
 /* 초기 로드 시 '전체' 버튼이 기본 활성 상태 */
-.all-filterBtn {
+/* .all-filterBtn {
     background: var(--primary);
     color: #ffffff;
-}
+} */
 
 /* JS 가 활성 버튼에 .active 를 붙일 경우 대응 */
 .all-filterBtn.active,
